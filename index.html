@@ -1,0 +1,157 @@
+<html>
+	<head>
+		<style>
+			* {
+				margin : 0;
+				padding : 0;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="can"></canvas>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.min.js"></script>
+		<script>
+			window.requestAnimFrame =
+				window.requestAnimationFrame       ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame    ||
+				window.oRequestAnimationFrame      ||
+				window.msRequestAnimationFrame     ||
+				function(callback) {
+					window.setTimeout(callback, 1000 / 60);
+				};
+
+
+			Array.prototype.shuffle = function()
+			{
+				for(var j, x, i = this.length; i; j = Math.floor(Math.random() * i), x = this[--i], this[i] = this[j], this[j] = x);
+    			return this;
+			}
+
+			var arround = [	
+			                {x: -1, y: -1},
+							{x: -1, y: 0},
+							{x: -1, y: 1},
+							{x: 1, y: -1},
+							{x: 1, y: 0},
+							{x: 1, y: 1},
+							{x: 0, y: -1},
+							{x: 0, y: 1}
+										];
+			var energie = 100;
+			var lambda = 0.01;
+			var resolution = 40;
+
+			Mat = function(l, e)
+			{
+			  this.lambda = l || 0.1;
+			  this.e = e || 0;
+			}
+
+			Matrix = function()
+			{
+			  this.mat = [];
+			}
+			      
+			Matrix.prototype.initMat = function(b_rand) {
+			  x = (b_rand) ? Math.round(Math.random() * 20) : resolution;
+			  y = (b_rand) ? Math.round(Math.random() * 20) : resolution;
+				for (i = 0; i < x; i++)
+				{
+				  	this.mat[i] = [];
+				   	for (j = 0; j < y; j++)
+				    	this.mat[i][j] = new Mat(0.1, Math.random() * (10000) - 5000);
+				}
+			}
+						
+			Matrix.prototype.tick = function()
+			{
+			  	len = this.mat.length;
+				lenDepth = this.mat[0].length;
+				arround = arround.shuffle();
+				for (i = 0; i < len; i++)
+					for (j = 0; j < lenDepth; j++)
+						for (a = 0; a < arround.length ; a++) {
+						   if (i + arround[a].x >= 0 && i + arround[a].x < len && j + arround[a].y >= 0 && j + arround[a].y < lenDepth)
+			         		{
+								phi = -1 * this.mat[i][j].lambda * (this.mat[i][j].e - this.mat[i + arround[a].x][j + arround[a].y].e);
+								if (phi > 0 && this.mat[i][j].lambda && this.mat[i][j].lambda && this.mat[i + arround[a].x][j + arround[a].y].lambda)
+								{
+									this.mat[i][j].e = this.mat[i][j].e + Math.abs(phi);
+									this.mat[i + arround[a].x][j + arround[a].y].e = this.mat[i + arround[a].x][j + arround[a].y].e - Math.abs(phi);
+								}
+			  				}
+						}	
+			}
+						
+			Scene = function() {
+			  var _this = this;
+			  
+				this.canvas = document.getElementById("can")
+			  this.canvas.width = window.innerWidth
+			  this.canvas.height = window.innerHeight
+				this.context = this.canvas.getContext("2d")
+				this.matrix = new Matrix()
+			  this.run = true
+			  this.mousedown = false;
+			  this.canvas.addEventListener('mousedown', function(e) {
+			      _this.mousedown = true;
+			  });
+			  this.canvas.addEventListener('mouseup', function(e) {
+			      _this.mousedown = false;
+			  });
+			  this.canvas.addEventListener('mousemove', function(e) {
+			      if (!_this.mousedown)
+			        return;
+			      var x = Math.floor(e.clientX/(_this.canvas.width / resolution));
+			      var y = Math.floor(e.clientY/(_this.canvas.height / resolution));
+			      _this.matrix.mat[x][y].e = energie;
+			      _this.matrix.mat[x][y].lambda = lambda;
+			    }, false);
+			}
+						
+			Scene.prototype.draw = function()
+			{
+				for (var i = 0; i < this.matrix.mat.length; i++)
+				{
+					for (var j = 0; j < this.matrix.mat[i].length; j++)
+					{
+			        tmp = Math.floor(this.matrix.mat[i][j].e)
+			        this.context.fillStyle = (tmp >= 0) ? "rgb("+tmp+", 0, 0)" : "rgb("+-tmp+", "+-tmp+", "+-tmp+")"
+			    		this.context.fillRect(	i * (this.canvas.width / resolution)
+														, j * (this.canvas.height / resolution)
+														, this.canvas.width / resolution
+														, this.canvas.height / resolution)
+					}
+				}
+			}
+						
+			Scene.prototype.loop = function() {
+				var _this = this;
+					
+			  this.draw();
+			  if (this.run)
+			    this.matrix.tick();
+				requestAnimationFrame(function() {
+			  	  _this.loop();
+				});
+			}
+
+			window.onload = function() {
+			  var gui = new dat.GUI();
+			  scene = new Scene();
+			  scene.matrix.initMat(false);
+			  scene.loop();
+			  gui.add(window, 'resolution', 10, 100).onChange(function(val) {
+			    scene.matrix.initMat();
+			  });
+			  gui.add(scene, 'run');
+			  gui.add(scene.matrix, 'initMat');
+			  mfol = gui.addFolder('Mouse config');
+			  mfol.add(window, 'energie', -10000, 10000)
+			  mfol.add(window, 'lambda').max(1)
+			  mfol.open();
+			}
+		</script>
+	</body>
+</html>
