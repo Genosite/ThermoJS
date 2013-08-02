@@ -1,14 +1,37 @@
 <html>
 	<head>
+		<title>ThermoJS - Thermic transfer simulation by Phedrik Benjabria</title>
 		<style>
 			* {
 				margin : 0;
 				padding : 0;
+				-webkit-user-select: none;
+			    -moz-user-select: none;
+			    -ms-user-select: none;
+			    -o-user-select: none;
+			    user-select: none;
 			}
 		</style>
 	</head>
 	<body>
 		<canvas id="can"></canvas>
+		<div id="share">
+			<div>
+				<div id="fb-root"></div>
+				<script>(function(d, s, id) {
+				  var js, fjs = d.getElementsByTagName(s)[0];
+				  if (d.getElementById(id)) return;
+				  js = d.createElement(s); js.id = id;
+				  js.src = "//connect.facebook.net/fr_FR/all.js#xfbml=1";
+				  fjs.parentNode.insertBefore(js, fjs);
+				}(document, 'script', 'facebook-jssdk'));</script>
+				<div class="fb-like" data-href="http://genosite.github.io/ThermoJS/" data-width="150" data-layout="button_count" data-show-faces="false" data-send="false"></div>
+			</div>
+			<div>
+				<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://genosite.github.io/ThermoJS/" data-via="genosite" data-lang="fr">Tweet</a>
+				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+			</div>
+		</div>
 		<script src="http://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.min.js"></script>
 		<script>
 			window.requestAnimFrame =
