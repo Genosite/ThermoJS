@@ -65,7 +65,7 @@
 							{x: 0, y: -1},
 							{x: 0, y: 1}
 										];
-			var energie = 100;
+			var energy = 100;
 			var lambda = 0.01;
 			var resolution = 40;
 
@@ -132,7 +132,7 @@
 			        return;
 			      var x = Math.floor(e.clientX/(_this.canvas.width / resolution));
 			      var y = Math.floor(e.clientY/(_this.canvas.height / resolution));
-			      _this.matrix.mat[x][y].e = energie;
+			      _this.matrix.mat[x][y].e = energy;
 			      _this.matrix.mat[x][y].lambda = lambda;
 			    }, false);
 			}
@@ -175,7 +175,7 @@
 			  gui.add(scene, 'run');
 			  gui.add(scene.matrix, 'initMat');
 			  mfol = gui.addFolder('Mouse config');
-			  mfol.add(window, 'energie', -10000, 10000)
+			  mfol.add(window, 'energy', -10000, 10000)
 			  mfol.add(window, 'lambda', 0, 1);
 			  mfol.open();
 			}
