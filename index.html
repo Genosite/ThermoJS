@@ -2,7 +2,7 @@
 	<head>
 		<title>ThermoJS - Thermic transfer simulation by Phedrik Benjabria</title>
 		<style>
-			* {
+			canvas #share {
 				margin : 0;
 				padding : 0;
 				-webkit-user-select: none;
@@ -175,8 +175,8 @@
 			  gui.add(scene, 'run');
 			  gui.add(scene.matrix, 'initMat');
 			  mfol = gui.addFolder('Mouse config');
-			  mfol.add(window, 'energie')
-			  mfol.add(window, 'lambda')
+			  mfol.add(window, 'energie', -10000, 10000)
+			  mfol.add(window, 'lambda', 0, 1);
 			  mfol.open();
 			}
 		</script>
